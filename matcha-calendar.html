@@ -1,415 +1,445 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Happy 2026 – Healing Calendar</title>
+<meta charset="UTF-8">
+<title>Devotional Calendar – Dwelling in Christ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
 
 <style>
-/* 🌸 WARM CHEERY PALETTE */
+:root {
+  --matcha-light: #d4edda;
+  --matcha-vibrant: #a8d5ba;
+  --matcha-deep: #4a7c59;
+  --tea-white: #f8f9fa;
+  --organic-shadow: rgba(74, 124, 89, 0.2);
+  --matcha-gradient: linear-gradient(135deg, var(--matcha-light), var(--matcha-vibrant), var(--tea-white));
+  --tomato-blush-gradient: linear-gradient(to bottom, #ffb6c1, #dc143c); /* Richer tomato blush */
+}
+
 body {
   margin: 0;
-  font-family: "Trebuchet MS", "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #fff1e6, #ffd6c9);
-  color: #5a3a3a;
+  font-family: 'Kalam', cursive; /* Cute Asian handwriting font */
+  background-image: radial-gradient(circle at 30% 70%, rgba(168, 213, 186, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 30%, rgba(212, 237, 218, 0.3) 0%, transparent 50%),
+                    var(--tomato-blush-gradient); /* Layered: patterns on top of gradient */
+  background-size: cover;
+  color: var(--matcha-deep);
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
-/* 🌸 HEADER */
+.container {
+  max-width: 950px;
+  width: 95%;
+  padding: 2rem;
+  border-radius: 15px; /* Soft corners */
+  background: var(--tea-white);
+  box-shadow: 0 4px 12px var(--organic-shadow);
+}
+
 header {
   text-align: center;
-  padding: 2rem 1rem 1rem;
+  margin-bottom: 1.5rem;
 }
 
 header h1 {
-  font-size: 2.4rem;
-  color: #ff7a6b;
+  font-size: 2.6rem;
+  background: var(--matcha-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Removed text-shadow for crisp edges */
+  font-weight: 700;
 }
 
-header p {
-  font-size: 0.95rem;
-  color: #8a4a4a;
-}
-
-/* 🌸 NAME INPUT */
-#nameInputWrapper {
-  margin-top: 0.6rem;
-  transition: opacity 0.6s ease;
-}
-
-#username {
-  padding: 0.6rem 0.9rem;
-  border-radius: 20px;
-  border: none;
-  background: #fff;
-  box-shadow: 0 4px 14px rgba(255,122,107,0.25);
-  font-size: 0.9rem;
-}
-
-/* 🌸 NAME DISPLAY */
-#nameDisplay {
-  display: none;
-  text-align: center;
-  margin: 1.2rem 0 0.4rem;
-  position: relative;
-}
-
-#greeting {
-  font-style: italic;
-  color: #ff7a6b;
+header small {
+  display: block;
+  color: var(--matcha-vibrant);
+  margin-top: 0.3rem;
   font-size: 1rem;
+}
+
+.name-input {
+  background: var(--tea-white);
+  border: 2px solid var(--matcha-vibrant);
+  border-radius: 10px; /* Soft corners */
+  color: var(--matcha-deep);
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  padding: 0.5rem;
+  box-shadow: 0 2px 4px var(--organic-shadow);
+}
+
+.confirmation {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--matcha-vibrant);
+  font-style: italic;
   opacity: 0;
-  animation: fadeIn 1.2s ease forwards;
+  transition: opacity 0.8s ease;
+  background: var(--matcha-light);
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px; /* Soft corners */
+  display: inline-block;
 }
 
-#editName {
-  font-size: 0.7rem;
-  color: #ff9f92;
-  text-decoration: none;
-}
-#editName:hover { text-decoration: underline; }
-
-/* shimmer */
-#nameDisplay::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 180px;
-  height: 100%;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.7),
-    transparent
-  );
-  animation: shimmer 4s ease-in-out infinite;
-  pointer-events: none;
+.confirmation.show {
+  opacity: 1;
 }
 
-/* 🌸 MONTH SELECT */
-.month-select {
-  margin-top: 0.6rem;
-  padding: 0.4rem 0.7rem;
-  border-radius: 14px;
-  border: none;
-  background: #fff6f1;
-  color: #8a4a4a;
-  font-size: 0.85rem;
-  box-shadow: 0 2px 8px rgba(255,122,107,0.2);
+.month-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.4rem 0;
 }
 
-/* 🌸 CALENDAR */
+.month-bar button {
+  border-radius: 10px; /* Soft corners */
+  border: 2px solid var(--matcha-vibrant);
+  background: var(--tea-white);
+  color: var(--matcha-deep);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: 400;
+  transition: transform 0.2s ease;
+}
+
+.month-bar button:hover {
+  transform: scale(1.05);
+}
+
+.month-title {
+  font-size: 1.2rem;
+  color: var(--matcha-vibrant);
+  font-weight: 700;
+}
+
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.9rem;
-  max-width: 960px;
-  width: 94%;
-  margin: 1.8rem 0 2rem;
-  opacity: 0;
-  transform: translateY(30px);
-  animation: calendarIn 1.2s ease forwards;
+  gap: 0.8rem;
 }
 
 .day {
-  padding: 1.6rem;
-  border-radius: 26px;
+  background: linear-gradient(135deg, var(--tea-white), var(--matcha-light));
+  border-radius: 10px; /* Soft corners on squares */
+  padding: 0.7rem;
+  min-height: 80px;
+  border: 2px solid var(--matcha-vibrant);
+  opacity: 0.7;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  font-weight: bold;
-  font-size: 1.15rem;
-  background: linear-gradient(145deg, #fffaf7, #ffd9cc);
-  box-shadow: 0 8px 20px rgba(255,122,107,0.25);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  opacity: 0;
-  animation: dayPop 0.6s ease forwards;
+  box-shadow: 0 2px 6px var(--organic-shadow);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.day:hover { transform: scale(1.06); }
+.day.unlocked {
+  cursor: pointer;
+  opacity: 0.9;
+}
 
-.day.locked {
-  opacity: 0.4;
-  cursor: not-allowed;
+.day.unlocked:hover {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 .day.today {
-  animation: glow 1.6s infinite alternate;
+  opacity: 1;
+  animation: organicGlow 6s ease-in-out infinite;
+  border-color: var(--matcha-deep);
 }
 
-/* 🌸 MESSAGE */
-.message {
-  max-width: 960px;
-  width: 94%;
-  background: linear-gradient(145deg, #fffdfb, #ffe4d8);
-  border-radius: 28px;
-  padding: 1.8rem;
-  box-shadow: 0 12px 30px rgba(255,122,107,0.25);
+@keyframes organicGlow {
+  0%,100% { box-shadow: 0 0 8px rgba(168, 213, 186, 0.5); }
+  50% { box-shadow: 0 0 16px rgba(168, 213, 186, 0.7); }
 }
 
-.message h2 { color: #ff7a6b; }
-.scripture { font-style: italic; color: #c35b50; }
-
-/* 🌸 PRAYER */
-#prayerBtn {
-  margin-top: 1rem;
-  padding: 0.6rem 1.4rem;
-  border-radius: 22px;
-  border: none;
-  background: linear-gradient(145deg, #ff9f92, #ff7a6b);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
+.day-number {
+  color: var(--matcha-deep);
+  font-size: 1rem;
+  font-weight: 700;
 }
-#prayerText { display: none; margin-top: 0.6rem; }
 
-/* 🌸 FOOTER */
-footer {
-  margin: 3rem 0 2rem;
-  font-size: 0.75rem;
-  color: rgba(120,70,70,0.6);
+.lock {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 0.7rem;
+  color: var(--matcha-vibrant);
+}
+
+.message-box {
+  margin-top: 1.5rem;
+  background: linear-gradient(145deg, var(--tea-white), var(--matcha-light));
+  border-radius: 15px; /* Soft corners */
+  padding: 1.5rem;
+  border: 2px solid var(--matcha-vibrant);
+  box-shadow: 0 4px 12px var(--organic-shadow);
+}
+
+.message-box h3 {
+  color: var(--matcha-deep);
+  font-weight: 700;
+}
+
+.scripture {
   font-style: italic;
+  color: var(--matcha-deep);
+  margin-top: 0.6rem;
 }
 
-/* 🌸 ANIMATIONS */
-@keyframes calendarIn {
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes dayPop {
-  to { opacity: 1; }
-}
-@keyframes glow {
-  from { box-shadow: 0 0 16px rgba(255,190,170,0.5); }
-  to   { box-shadow: 0 0 30px rgba(255,190,170,0.9); }
-}
-@keyframes shimmer {
-  0% { opacity: 0; }
-  40% { opacity: 0.6; }
-  100% { opacity: 0; }
-}
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-/* 💌 Contact Designer Button */
-.contact-designer {
-  margin: 1.8rem 0 0.4rem;
-  text-align: center;
+.prayer-btn {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--matcha-vibrant), var(--matcha-deep));
+  color: var(--tea-white);
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 10px; /* Soft corners */
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 400;
+  box-shadow: 0 2px 4px var(--organic-shadow);
+  transition: transform 0.2s ease;
 }
 
-.contact-designer a {
-  display: inline-block;
-  padding: 0.65rem 1.4rem;
-  background: linear-gradient(145deg, #ff9f92, #ff7a6b);
-  color: #fff;
-  font-weight: bold;
-  border-radius: 22px;
-  text-decoration: none;
-  box-shadow: 0 6px 16px rgba(255,122,107,0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.prayer-btn:hover {
+  transform: scale(1.05);
 }
 
-.contact-designer a:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 20px rgba(255,122,107,0.4);
+.prayer {
+  margin-top: 0.7rem;
+  color: var(--matcha-deep);
+  display: none;
 }
-/* 🌸 Subtle Floating Sticky Contact Button */
-.floating-contact {
-  position: fixed;
-  bottom: 18px;
-  right: 18px;
-  z-index: 1000;
-}
-
-.floating-contact a {
-  display: block;
-  padding: 0.6rem 1.2rem;
-  background: #ffbdb1; /* softer coral */
-  color: #6a3a3a; /* gentler text color */
-  font-size: 0.88rem;
-  border-radius: 18px;
-  text-decoration: none;
-  box-shadow: 0 4px 10px rgba(255,111,97,0.25); /* lighter shadow */
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-
-/* Softer hover with warmer glow */
-.floating-contact a:hover {
-  background: #ffcdc4;
-  transform: scale(1.04);
-  box-shadow: 0 6px 14px rgba(255,111,97,0.30);
-}
-
-
 </style>
 </head>
 
 <body>
+<div class="container">
 
 <header>
-  <h1>Greetings Epic Lady!</h1>
-  <p id="namePrompt">How should we call you?</p>
-  <div id="nameInputWrapper">
-    <input id="username" placeholder="Your name…" />
-  </div>
-
-  <select class="month-select" id="monthSelect"></select>
+  <h1 id="calendarTitle">Devotional Calendar</h1>
+  <small>What do you want to be called?</small>
+  <input id="nameInput" class="name-input" placeholder="Beloved of God">
+  <div id="confirmation" class="confirmation"></div>
 </header>
-<div id="nameDisplay">
-  <p id="greeting"></p>
-  <p id="yearDisplay"></p>
-  <a href="#" id="editName">edit name</a>
+
+<div class="month-bar">
+  <button onclick="changeMonth(-1)">‹</button>
+  <div class="month-title" id="monthTitle"></div>
+  <button onclick="changeMonth(1)">›</button>
 </div>
 
 <div class="calendar" id="calendar"></div>
 
-<div class="message" id="messageAnchor">
-  <h2 id="msgTitle">Select a Day</h2>
-  <p id="msgText"></p>
-  <p class="scripture" id="scripture"></p>
-  <button id="prayerBtn">Daily Prayer</button>
-  <p id="prayerText"></p>
-</div>
-<div class="floating-contact">
-  <a href="https://letterbird.co/x3n" target="_blank" rel="noopener">
-    ✨ Contact Designer
-  </a>
+<div class="message-box" id="messageBox">
+  <h3 id="messageTitle">Welcome</h3>
+  <p id="messageText">Select today’s date to receive what the Lord has prepared.</p>
+  <div class="scripture" id="scriptureText"></div>
+  <button class="prayer-btn" onclick="togglePrayer()">Daily Prayer</button>
+  <div class="prayer" id="prayerText"></div>
 </div>
 
- <footer>
-  Created with love by Xen · <span id="footerYear"></span>
-</footer>
+</div>
 
 <script>
-/* 🌸 NAME */
-let userName="";
-const nameInput=document.getElementById("username");
-const namePrompt=document.getElementById("namePrompt");
-const nameDisplay=document.getElementById("nameDisplay");
-const greeting=document.getElementById("greeting");
-const editName=document.getElementById("editName");
-const wrapper=document.getElementById("nameInputWrapper");
+const today = new Date();
 
-const saved=localStorage.getItem("healingName");
-if(saved) setName(saved);
-
-nameInput.addEventListener("keydown",e=>{
-  if(e.key==="Enter"){ e.preventDefault(); setName(nameInput.value); }
-});
-
-function setName(name){
-  userName=name.trim();
-  if(!userName) return;
-  localStorage.setItem("healingName",userName);
-  namePrompt.style.display="none";
-  wrapper.style.opacity="0";
-  setTimeout(()=>wrapper.style.display="none",600);
-  nameDisplay.style.display="block";
-  greeting.textContent=`Oh Look! It's, ${userName} 🎀`;
-}
-
-editName.onclick=e=>{
-  e.preventDefault();
-  nameDisplay.style.display="none";
-  wrapper.style.display="block";
-  wrapper.style.opacity="1";
-  namePrompt.style.display="block";
-  nameInput.focus();
-};
-
-/* 🌸 MONTH SWITCHING */
-const monthSelect=document.getElementById("monthSelect");
-const months=[
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
-];
-months.forEach((m,i)=>{
-  const o=document.createElement("option");
-  o.value=i; o.textContent=m;
-  monthSelect.appendChild(o);
-});
-
-const today=new Date();
-let currentMonth=today.getMonth();
-monthSelect.value=currentMonth;
-
-/* 🌸 DEVOTIONALS */
-const devotionals=Array.from({length:31},()=>({
-  message:"Rest gently today and let Christ hold your heart.",
-  verse:"Psalm 46:10 — Be still, and know that I am God.",
-  prayer:"Lord Jesus, keep me close and peaceful today."
+const devotionals = Array.from({length:31},(_,i)=>({
+  message: [
+    "Rest in Me. Healing begins when striving ends.",
+    "Abide in Me; closeness is where strength grows.",
+    "I am gently restoring your heart.",
+    "You are safe in My presence.",
+    "Let My peace settle you today.",
+    "Remain with Me and be renewed.",
+    "I am near to the brokenhearted.",
+    "You are being made whole.",
+    "My grace is sufficient for you.",
+    "Stay with Me; I delight in you.",
+    "You are not alone.",
+    "I am your refuge.",
+    "Trust Me with your wounds.",
+    "Healing flows from My love.",
+    "I am shaping beauty in you.",
+    "Be still and know Me.",
+    "Your heart is precious to Me.",
+    "I am patient with your growth.",
+    "Remain rooted in truth.",
+    "I am your peace.",
+    "Let grace lead you.",
+    "You are deeply known.",
+    "I am faithful.",
+    "Your healing matters.",
+    "Come dwell with Me.",
+    "My love covers you.",
+    "You are cherished.",
+    "I walk with you.",
+    "My light surrounds you.",
+    "Rest in My care.",
+    "Abide and flourish."
+  ][i],
+  verse: [
+    "Psalm 46:10","John 15:4","Psalm 147:3","Isaiah 41:10",
+    "John 14:27","Isaiah 40:31","Psalm 34:18","2 Corinthians 5:17",
+    "2 Corinthians 12:9","Zephaniah 3:17","Deuteronomy 31:6",
+    "Psalm 91:2","Matthew 11:28","1 John 4:16","Romans 8:28",
+    "Psalm 46:10","Luke 12:6","Philippians 1:6","Colossians 2:7",
+    "John 16:33","Ephesians 2:8","Psalm 139:1","Lamentations 3:22",
+    "Jeremiah 30:17","Psalm 27:4","Romans 5:8","Isaiah 43:4",
+    "Micah 6:8","John 1:5","Psalm 4:8","John 15:5"
+  ][i],
+  prayer: "Lord Jesus, I choose to dwell in You today. Heal what is tender, strengthen what is weak, and draw me ever closer to Your heart. Amen."
 }));
 
-const calendar=document.getElementById("calendar");
+let month = today.getMonth();
+let year = today.getFullYear();
 
-monthSelect.onchange=()=>buildCalendar(+monthSelect.value);
-buildCalendar(currentMonth);
+const calendar = document.getElementById("calendar");
+const monthTitle = document.getElementById("monthTitle");
+const nameInput = document.getElementById('nameInput');
+const calendarTitle = document.getElementById('calendarTitle');
+const confirmation = document.getElementById('confirmation');
+const messageBox = document.getElementById('messageBox');
 
-function daysInMonth(m,y){ return new Date(y,m+1,0).getDate(); }
+function updateTitle() {
+  const name = nameInput.value.trim();
+  if (name) {
+    calendarTitle.textContent = `${name}'s Devotional Calendar`;
+  } else {
+    calendarTitle.textContent = 'Devotional Calendar';
+  }
+  localStorage.setItem('userName', name);
+}
 
-function buildCalendar(month){
-  calendar.innerHTML="";
-  const days=daysInMonth(month,2026);
-  for(let d=1; d<=days; d++){
-    const box=document.createElement("div");
-    box.className="day";
-    box.style.animationDelay=`${d*0.03}s`;
-    box.textContent=d;
-
-    const isToday = month===today.getMonth() && d===today.getDate();
-    const future = month>today.getMonth() || (month===today.getMonth() && d>today.getDate());
-
-    if(future) box.classList.add("locked");
-    if(isToday) box.classList.add("today");
-
-    box.onclick=()=>!future && selectDay(d);
-    calendar.appendChild(box);
+function showConfirmation() {
+  const name = nameInput.value.trim();
+  if (name) {
+    confirmation.textContent = `Welcome, ${name}! May you dwell in Christ today.`;
+    confirmation.classList.add('show');
+    setTimeout(() => {
+      confirmation.classList.remove('show');
+    }, 3000); // Hide after 3 seconds
   }
 }
 
-/* 🌸 DAY SELECT */
-function selectDay(day){
-  playSong(day);
-  const d=devotionals[day-1];
-  msgTitle.textContent=`Day ${day}`;
-  msgText.textContent=userName?`${userName}, ${d.message}`:d.message;
-  scripture.textContent=d.verse;
-  prayerText.textContent=d.prayer;
-  prayerText.style.display="none";
-  messageAnchor.scrollIntoView({behavior:"smooth"});
+nameInput.addEventListener('input', updateTitle);
+nameInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    showConfirmation();
+  }
+});
+nameInput.addEventListener('blur', showConfirmation); // Also on blur for completeness
+
+// Load saved name on page load
+const savedName = localStorage.getItem('userName');
+if (savedName) {
+  nameInput.value = savedName;
+  updateTitle();
 }
 
-prayerBtn.onclick=()=>{
-  prayerText.style.display=
-    prayerText.style.display==="block"?"none":"block";
-};
+function renderCalendar() {
+  calendar.innerHTML = "";
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-/* 🌸 MUSIC */
-function playSong(day){
-  const ctx=new AudioContext();
-  const notes=[349,392,440,466,523];
-  notes.slice(0,2+Math.floor(day/6)).forEach((f,i)=>{
-    const o=ctx.createOscillator(), g=ctx.createGain();
-    o.frequency.value=f;
-    g.gain.value=0.022;
-    o.connect(g); g.connect(ctx.destination);
-    o.start(ctx.currentTime+i*0.6);
-    o.stop(ctx.currentTime+i*0.6+1.2);
+  monthTitle.textContent = new Date(year, month)
+    .toLocaleString("default",{month:"long",year:"numeric"});
+
+  for(let i=0;i<firstDay;i++) calendar.appendChild(document.createElement("div"));
+
+  for(let d=1;d<=daysInMonth;d++){
+    const cell = document.createElement("div");
+    const cellDate = new Date(year,month,d);
+    const unlocked = cellDate <= today;
+
+    cell.className = "day" + (unlocked ? " unlocked" : "");
+    if(d===today.getDate() && month===today.getMonth() && year===today.getFullYear())
+      cell.classList.add("today");
+
+    cell.innerHTML = `<div class="day-number">${d}</div>` +
+      (unlocked ? "" : `<div class="lock">locked</div>`);
+
+    if(unlocked){
+      cell.onclick = ()=>selectDay(d);
+    }
+    calendar.appendChild(cell);
+  }
+}
+
+function selectDay(day){
+  playF(day);
+  const data = devotionals[day-1];
+  const name = nameInput.value.trim() || 'Beloved';
+  document.getElementById("messageTitle").textContent = `Day ${day}`;
+  document.getElementById("messageText").textContent = `${name}, ${data.message}`;
+  document.getElementById("scriptureText").textContent = data.verse;
+  document.getElementById("prayerText").textContent = data.prayer;
+  document.getElementById("prayerText").style.display = "none";
+  
+  // Smooth scroll to the message box
+  messageBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+function togglePrayer(){
+  const p = document.getElementById("prayerText");
+  p.style.display = p.style.display==="block"?"none":"block";
+}
+
+function changeMonth(n){
+  month += n;
+  if(month<0){month=11;year--;}
+  if(month>11){month=0;year++;}
+  renderCalendar();
+}
+
+function playF(day = 1){
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Full gentle F-major palette
+  const scale = [
+    349.23, // F
+    440.00, // A
+    523.25, // C
+    587.33, // D
+    466.16  // Bb
+  ];
+
+  // Determine how many notes are allowed today
+  const noteCount = Math.min(2 + Math.floor(day / 6), scale.length);
+  const melody = scale.slice(0, noteCount);
+
+  const now = ctx.currentTime;
+
+  melody.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = freq;
+
+    const start = now + i * 0.55;
+
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.035, start + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 1.0);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(start);
+    osc.stop(start + 1.2);
   });
 }
-// Automatically populate current year
-const currentYear = new Date().getFullYear();
 
-const footerYear = document.getElementById("footerYear");
-if (footerYear) footerYear.textContent = currentYear;
-
-const yearDisplay = document.getElementById("yearDisplay");
-if (yearDisplay) yearDisplay.textContent = `Year ${currentYear}`;
-
+renderCalendar();
 </script>
-
 </body>
 </html>
-
