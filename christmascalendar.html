@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7 Days of Giveaways</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Google Font Cinzel -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: radial-gradient(circle at top, #2b1b4a, #0d081a);
+  --panel: linear-gradient(135deg, #3b2a6d, #1a1038);
+  --accent: #9b7bff;
+  --text: #efe9ff;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Web canopy */
+#web-canopy {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px;
+  z-index: 900;
+}
+#web-canopy svg { width: 100%; height: auto; }
+
+/* Gift container */
+#gift-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1001;
+  animation: spider-drop 2s ease forwards;
+}
+
+#web-node {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220,200,255,1), rgba(155,123,255,0.8), rgba(155,123,255,0));
+  box-shadow: 0 0 6px rgba(180,150,255,0.9), 0 0 14px rgba(155,123,255,0.6);
+  animation: glisten 2.8s ease-in-out infinite;
+  z-index: 1002;
+}
+#web-node::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 14px;
+  background: rgba(200,180,255,0.85);
+  filter: blur(0.2px);
+  z-index: 1003;
+}
+
+#web-thread {
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to bottom, rgba(200,180,255,0.9), rgba(200,180,255,0.1));
+  margin-top: -4px;
+  z-index: 1000;
+}
+
+#gift {
+  width: 45px;
+  height: 45px;
+  margin-top: 4px;
+  cursor: pointer;
+  filter: drop-shadow(0 0 8px rgba(160,120,255,.7));
+  transition: transform .3s ease;
+}
+#gift:hover { transform: scale(1.1); }
+
+#gift-text {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+#gift-container:hover #gift-text { opacity: 1; }
+
+/* Stationary gift after calendar opens */
+#gift-container.stationary {
+  top: 120px;
+}
+#gift-container.stationary #gift-text { display: none; }
+
+/* Drawer / calendar */
+#drawer {
+  position: fixed;
+  top: -200%;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--panel);
+  transition: top .8s ease;
+  padding: 220px 20px 40px;
+  box-sizing: border-box;
+}
+#drawer.open { top: 0; }
+
+/* Calendar header */
+#calendar-header {
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+#calendar-header h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  background: linear-gradient(90deg, #007BA7, #6495ED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+#countdown {
+  font-size: 0.9rem;
+  color: #9b7bff;
+  margin-top: 2px;
+}
+
+/* Calendar */
+.calendar {
+  max-width: 420px;
+  margin: 20px auto 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+}
+.day {
+  aspect-ratio: 1/1;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  opacity: .25;
+  pointer-events: none;
+}
+.day.active {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(155,123,255,.7);
+}
+.day.active:hover { background: rgba(155,123,255,.25); }
+.day.blocked {
+  opacity: 0.35;
+  filter: blur(2px);
+  pointer-events: none;
+  background: rgba(200,200,255,0.1);
+}
+
+/* Modal */
+#modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,.75);
+  display: none;
+  z-index: 2000;
+}
+#modal-content {
+  background: #1b1035;
+  padding: 24px;
+  border-radius: 14px;
+  max-width: 420px;
+  width: 90%;
+}
+#close { float: right; cursor: pointer; font-size: 20px; }
+a { color: var(--accent); }
+
+/* Right-side drawer */
+#right-drawer {
+  position: fixed;
+  top: 100px;
+  right: -300px; /* fully hidden */
+  width: 250px;
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 12px 0 0 12px;
+  transition: right 0.6s ease;
+  z-index: 1100;
+}
+#right-drawer.open { right: 0; }
+
+/* Right gift image */
+#right-gift-container {
+  position: fixed;
+  top: 150px;
+  right: 0;
+  cursor: pointer;
+  z-index: 1110;
+}
+#right-gift { width: 40px; height: 40px; filter: drop-shadow(0 0 8px rgba(160,120,255,.7)); }
+
+/* Animations */
+@keyframes glisten {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+@keyframes spider-drop {
+  0% { top: 0px; }
+  100% { top: 120px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Web Canopy -->
+<div id="web-canopy">
+  <svg viewBox="0 0 600 200" preserveAspectRatio="xMidYMin meet">
+    <path d="M300 0 L300 200" stroke="rgba(200,180,255,0.4)" stroke-width="1"/>
+    <path d="M0 0 Q300 140 600 0" stroke="rgba(200,180,255,0.3)" fill="none"/>
+    <path d="M80 0 Q300 120 520 0" stroke="rgba(200,180,255,0.25)" fill="none"/>
+  </svg>
+</div>
+
+<!-- Main Gift -->
+<div id="gift-container">
+  <div id="web-node"></div>
+  <div id="web-thread"></div>
+  <img id="gift" src="holog.png" alt="Gift">
+  <div id="gift-text">open me</div>
+</div>
+
+<!-- Drawer -->
+<div id="drawer">
+  <div id="calendar-header">
+    <h2>December 2025</h2>
+    <p id="countdown">Countdown to New Year: </p>
+  </div>
+  <div class="calendar" id="calendar"></div>
+</div>
+
+<!-- Right drawer trigger gift -->
+<div id="right-gift-container">
+  <img id="right-gift" src="gift-pink.png" alt="Gift">
+</div>
+<div id="right-drawer">
+  <h2>Bookmark Gifts!</h2>
+  <p>Click here to save your place and receive future gifts.</p>
+</div>
+
+<!-- Audio -->
+<audio id="drawer-music" src="https://example.com/music.mp3" loop></audio>
+
+<!-- Modal -->
+<div id="modal">
+  <div id="modal-content">
+    <span id="close">×</span>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// Countdown
+function updateCountdown(){
+  const now = new Date();
+  const newYear = new Date('Jan 1, 2026 00:00:00');
+  const diff = newYear - now;
+  if(diff <= 0){
+    document.getElementById('countdown').textContent = 'Happy New Year!';
+    clearInterval(countdownInterval);
+    return;
+  }
+  const days = Math.floor(diff/1000/60/60/24);
+  const hours = Math.floor((diff/1000/60/60)%24);
+  const minutes = Math.floor((diff/1000/60)%60);
+  const seconds = Math.floor((diff/1000)%60);
+  document.getElementById('countdown').textContent = 
+    `Countdown to New Year: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+}
+const countdownInterval = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// Calendar setup
+const today = new Date();
+const currentDay = today.getDate();
+const calendar = document.getElementById('calendar');
+const drawer = document.getElementById('drawer');
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+const giftContainer = document.getElementById('gift-container');
+const gift = document.getElementById('gift');
+const rightGift = document.getElementById('right-gift');
+const rightDrawer = document.getElementById('right-drawer');
+const music = document.getElementById('drawer-music');
+
+const gifts = {
+  18: { title:"Snowglobe Game", html:`<a href="SNOWGLOBE_URL">Visit</a>` },
+  19: { title:"7 Tips for Joy", html:`<ol><li>Slow down</li><li>Rest</li></ol>` },
+  20: { title:"Printable Card", html:`<a href="CARD_URL">View / Print</a>` },
+  21: { title:"Play Game", html:`<a href="GAME_URL">Play</a>` },
+  22: { title:"Membership", html:`<a href="MEMBER_URL">Join</a>` },
+  23: { title:"Chimera Quest", html:`<a href="QUEST_URL">Play</a>` },
+  24: { title:"Christmas Day 🎄", html:`<a href="SONGS_URL">12 Songs</a>` }
+};
+
+// Build calendar
+for(let d=1; d<=31; d++){
+  const div = document.createElement('div');
+  div.className = 'day';
+  div.textContent = d;
+
+  if(d < 18){
+    div.classList.add('blocked');
+  } else if(d === 18 && currentDay < 18){
+    div.classList.add('active');
+    div.onclick = () => openGiftMessage();
+  } else if(d >= 18 && d <= 24){
+    div.classList.add('active');
+    if(currentDay >= d){
+      div.onclick = () => openGift(d);
+    }
+  }
+
+  calendar.appendChild(div);
+}
+
+function openGiftMessage(){
+  modalBody.innerHTML = `
+    <h2>7 Days of Giveaways</h2>
+    <p>Gifts start 7 days before Christmas. Bookmark this page and come back to receive your gifts!<br>— Xen</p>
+  `;
+  modal.style.display = 'flex';
+}
+
+function openGift(day){
+  modalBody.innerHTML = `<h2>${gifts[day].title}</h2>${gifts[day].html}`;
+  modal.style.display = 'flex';
+}
+
+document.getElementById('close').onclick = () => modal.style.display = 'none';
+window.onclick = e => { if(e.target === modal) modal.style.display = 'none'; };
+
+// Gift click → open calendar drawer
+gift.onclick = () => {
+  giftContainer.classList.add('stationary');
+  drawer.classList.add('open');
+};
+
+// Right gift click → open right drawer + play music
+rightGift.onclick = () => {
+  rightDrawer.classList.toggle('open');
+  if(music.paused) music.play();
+};
+</script>
+</body>
+</html>
+
